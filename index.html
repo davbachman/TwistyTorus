@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Torus Rubik Puzzle</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <h1>Torus Rubik Puzzle</h1>
+        <div class="topbar-actions">
+          <button id="scramble-btn" type="button">Scramble</button>
+          <button id="reset-btn" type="button">Reset</button>
+        </div>
+      </header>
+      <main class="stage-wrap">
+        <canvas id="game-canvas" aria-label="Torus puzzle"></canvas>
+      </main>
+      <footer class="statusbar">
+        <div id="status-text">
+          Desktop: left-drag a region to move a ring, right-drag or two-finger trackpad swipe to orbit. Mobile:
+          one-finger drag a region to move a ring, two-finger drag to orbit.
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="./main.js?v=20260211-4"></script>
+  </body>
+</html>

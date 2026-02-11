@@ -1,0 +1,59 @@
+Original prompt: Build a Rubik-like puzzle on a torus with 16x8 regions, click selection, arrow-key ring rotations with smooth animation, and reset behavior.
+
+## 2026-02-11
+- Initialized project as a static Vanilla JS + Three.js app.
+- Implemented torus region grid (16x8) as 128 independently pickable meshes.
+- Implemented octant-based initial coloring from region-center signs (x/y/z).
+- Added click-to-select / click-again-to-deselect highlighting.
+- Added animated moves:
+  - Up/Down rotate selected meridional ring by one `v` cell.
+  - Left/Right rotate selected longitudinal band by one `u` cell.
+  - Input lock during animation.
+- Added `Reset` button to restore original layout and clear selection.
+- Added deterministic hooks:
+  - `window.render_game_to_text()`
+  - `window.advanceTime(ms)`
+
+## TODO / follow-ups
+- Run Playwright interaction checks against key scenarios and capture artifacts.
+- Verify rendering works in environment without CDN issues.
+- Verified JavaScript syntax with `node --check main.js`.
+- Verified local serving of `index.html` via temporary `python3 -m http.server` and HTTP 200 response.
+- Attempted to run Playwright skill client, but local install of `playwright` failed due restricted network (`ENOTFOUND registry.npmjs.org`).
+- Added import map in `index.html` so Three.js addons (`OrbitControls`) resolve correctly in browser ESM mode.
+- Re-verified local server response for updated `index.html` (HTTP 200).
+- Enabled npm/network and installed Playwright runtime under `~/.codex` so the required skill client can run.
+- Installed Playwright Chromium browser (`npx playwright install chromium`).
+- Ran Playwright skill-client scenarios with screenshot + state capture:
+  - select region (`output/web-game/select`)
+  - up move (`output/web-game/up`)
+  - right move (`output/web-game/right`)
+  - toggle deselect (`output/web-game/toggle`)
+  - corrected post-move reset (`output/web-game/reset_after_moves_click`)
+  - input lock stress (`output/web-game/input_lock`)
+- Verified no console/page errors were emitted by the Playwright client.
+- Verified behavior from state dumps:
+  - selected sticker tracks physical piece across moves
+  - up updates selected sticker `iv` by +1
+  - right updates selected sticker `iu` by +1
+  - toggle click clears selection
+  - reset after moves restores board mapping and clears selection
+  - simultaneous up+right while animating results in one move (input lock)
+- Cleanup pass: removed temporary Playwright artifacts (`output/`, `test-actions/`) and `.DS_Store`.
+- Replaced remaining legacy animation/queue API references with unified interaction state output:
+  - `render_game_to_text().mode` now mirrors interaction mode (`idle|ring_drag|orbit`).
+  - `render_game_to_text().input` now reports `{ mode, pointerCount, ringDrag }`.
+- Updated status copy for unified controls:
+  - desktop: left-drag region ring, right-drag / trackpad two-finger swipe for orbit.
+  - mobile: one-finger ring drag, two-finger orbit.
+- Removed stale animation timeline coupling from frame/advance hooks (`updateAnimation` no longer referenced).
+- Verified JavaScript syntax: `node --check main.js` passes.
+- Ran Playwright validation of unified controls (custom script) and verified:
+  - left-drag enters `ring_drag`, releases to snapped `idle`
+  - keyboard arrows still move selected sticker
+  - right-click enters orbit mode
+  - wheel orbit path active
+  - touch one-finger drag enters `ring_drag`
+  - touch two-finger drag enters `orbit`
+- Saved verification screenshot: `/tmp/torus-unified-check-2.png`.
+- Updated static footer copy in `index.html` so first render text matches the new unified drag controls before JS status updates run.
