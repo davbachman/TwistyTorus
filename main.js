@@ -1042,8 +1042,8 @@ function refreshStatusText() {
   }
 
   const idleInstructions = isCoarseTouch
-    ? "Mobile: tap a region to select, drag one finger on a region to move its ring, use two fingers to orbit."
-    : "Desktop: click a region to select, left-drag on a region to move its ring, right-drag or two-finger trackpad swipe to orbit. Arrow keys still work.";
+    ? "Tap a region to select, drag one finger on a region to move its ring, use two fingers to orbit."
+    : "Click a region to select, left-drag on a region to move its ring, right-drag or two-finger trackpad swipe to orbit. Arrow keys still work.";
 
   if (!selectedStickerId) {
     statusText.textContent = idleInstructions;
