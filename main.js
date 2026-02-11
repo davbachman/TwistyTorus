@@ -1042,8 +1042,8 @@ function refreshStatusText() {
   }
 
   const idleInstructions = isCoarseTouch
-    ? "Tap a region to select, drag one finger on a region to move its ring, use two fingers to orbit."
-    : "Click a region to select, left-drag on a region to move its ring, right-drag or two-finger trackpad swipe to orbit. Arrow keys still work.";
+    ? "Use one finger to select a region and rotate ring, two fingers to rotate torus."
+    : "Use one finger/left-click drag to select a region and rotate ring, two fingers/right-click drag to rotate torus.";
 
   if (!selectedStickerId) {
     statusText.textContent = idleInstructions;
@@ -1057,8 +1057,8 @@ function refreshStatusText() {
   }
 
   const selectedInstructions = isCoarseTouch
-    ? "Drag one finger on the selected region to move its ring. Use two fingers to orbit."
-    : "Left-drag on the selected region to move its ring; release snaps to the nearest step. Right-drag or two-finger trackpad swipe orbits. Arrow keys still work.";
+    ? "Use one finger to select a region and rotate ring, two fingers to rotate torus."
+    : "Use one finger/left-click drag to select a region and rotate ring, two fingers/right-click drag to rotate torus.";
   statusText.textContent = `Selected region (u=${selected.iu}, v=${selected.iv}). ${selectedInstructions}`;
 }
 
