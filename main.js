@@ -1056,10 +1056,7 @@ function refreshStatusText() {
     return;
   }
 
-  const selectedInstructions = isCoarseTouch
-    ? "Use one finger to select a region and rotate ring, two fingers to rotate torus."
-    : "Use one finger/left-click drag to select a region and rotate ring, two fingers/right-click drag to rotate torus.";
-  statusText.textContent = `Selected region (u=${selected.iu}, v=${selected.iv}). ${selectedInstructions}`;
+  statusText.textContent = idleInstructions;
 }
 
 function frame(nowMs) {
