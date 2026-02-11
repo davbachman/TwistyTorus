@@ -119,7 +119,10 @@ function init() {
   resizeRenderer();
   installHandlers();
   refreshStatusText();
-  window.addEventListener("resize", resizeRenderer);
+  window.addEventListener("resize", () => {
+    resizeRenderer();
+    refreshStatusText();
+  });
   requestAnimationFrame(frame);
 }
 
@@ -1027,20 +1030,36 @@ function applyResponsiveCameraDistance(width, height) {
 }
 
 function refreshStatusText() {
+  if (!statusText) {
+    return;
+  }
+
+  const isCoarseTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  const isLandscape = window.matchMedia("(orientation: landscape)").matches;
+  if (isCoarseTouch && isLandscape) {
+    statusText.textContent = "";
+    return;
+  }
+
+  const idleInstructions = isCoarseTouch
+    ? "Mobile: tap a region to select, drag one finger on a region to move its ring, use two fingers to orbit."
+    : "Desktop: click a region to select, left-drag on a region to move its ring, right-drag or two-finger trackpad swipe to orbit. Arrow keys still work.";
+
   if (!selectedStickerId) {
-    statusText.textContent =
-      "Desktop: left-drag a region to move a ring, right-drag or two-finger trackpad swipe to orbit. Mobile: one-finger drag a region to move a ring, two-finger drag to orbit.";
+    statusText.textContent = idleInstructions;
     return;
   }
 
   const selected = stickerById.get(selectedStickerId);
   if (!selected) {
-    statusText.textContent =
-      "Desktop: left-drag a region to move a ring, right-drag or two-finger trackpad swipe to orbit. Mobile: one-finger drag a region to move a ring, two-finger drag to orbit.";
+    statusText.textContent = idleInstructions;
     return;
   }
 
-  statusText.textContent = `Selected region (u=${selected.iu}, v=${selected.iv}). Drag on it to move its ring; release snaps to nearest step. Arrow keys still work.`;
+  const selectedInstructions = isCoarseTouch
+    ? "Drag one finger on the selected region to move its ring. Use two fingers to orbit."
+    : "Left-drag on the selected region to move its ring; release snaps to the nearest step. Right-drag or two-finger trackpad swipe orbits. Arrow keys still work.";
+  statusText.textContent = `Selected region (u=${selected.iu}, v=${selected.iv}). ${selectedInstructions}`;
 }
 
 function frame(nowMs) {
