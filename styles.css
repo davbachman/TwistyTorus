@@ -86,6 +86,7 @@ body {
   overflow: hidden;
   border: 1px solid var(--border);
   background: #ebe5d2;
+  height: 100%;
 }
 
 #game-canvas {
@@ -115,5 +116,21 @@ body {
   #reset-btn,
   #scramble-btn {
     padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (max-width: 700px) and (orientation: portrait) {
+  .app-shell {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .stage-wrap {
+    min-height: 68vh;
+  }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  .stage-wrap {
+    min-height: 42vh;
   }
 }

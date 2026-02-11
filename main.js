@@ -15,6 +15,17 @@ const TRACKPAD_ORBIT_SENSITIVITY = 0.0026;
 const TOUCH_ORBIT_SENSITIVITY = 0.01;
 const SCRAMBLE_MOVE_COUNT = 100;
 const VIEW_OFFSET_Y_PX = 28;
+const BASE_FOV = 45;
+const MOBILE_MAX_DIM_PX = 1024;
+const MOBILE_PORTRAIT_DISTANCE_NEAR = 118;
+const MOBILE_PORTRAIT_DISTANCE_FAR = 150;
+const MOBILE_LANDSCAPE_DISTANCE_NEAR = 108;
+const MOBILE_LANDSCAPE_DISTANCE_FAR = 84;
+const MOBILE_PORTRAIT_ASPECT_RANGE = 0.55;
+const MOBILE_LANDSCAPE_ASPECT_RANGE = 1.4;
+const MOBILE_MIN_DISTANCE = 46;
+const MOBILE_MAX_DISTANCE = 160;
+const MOBILE_VIEW_OFFSET_Y_PX = 10;
 const BOUNDARY_ARC_SEGMENTS = 18;
 const BOUNDARY_ARC_LIFT = 0.02;
 const BOUNDARY_ARC_COLOR = 0x000000;
@@ -45,7 +56,7 @@ renderer.setClearColor(0xebe5d2, 1);
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 500);
+const camera = new THREE.PerspectiveCamera(BASE_FOV, 1, 0.1, 500);
 camera.up.set(0, 0, 1);
 camera.position.set(56, 38, 28);
 
@@ -59,6 +70,7 @@ controls.mouseButtons.RIGHT = THREE.MOUSE.ROTATE;
 controls.minDistance = 35;
 controls.maxDistance = 140;
 controls.update();
+const BASE_CAMERA_DISTANCE = camera.position.distanceTo(controls.target);
 
 const hemiLight = new THREE.HemisphereLight(0xfff6db, 0x7f8ca5, 0.85);
 scene.add(hemiLight);
@@ -555,9 +567,14 @@ function applyDiscreteMoveForAnchor(type, dir, anchorStickerId) {
 }
 
 function orbitCameraByPixels(deltaX, deltaY, sensitivity) {
+  const wasEnabled = controls.enabled;
+  if (!wasEnabled) {
+    controls.enabled = true;
+  }
   controls.rotateLeft(deltaX * sensitivity);
   controls.rotateUp(deltaY * sensitivity);
   controls.update();
+  controls.enabled = wasEnabled;
 }
 
 function getTouchCentroid() {
@@ -975,9 +992,38 @@ function resizeRenderer() {
   const width = stageWrap.clientWidth;
   const height = stageWrap.clientHeight;
   renderer.setSize(width, height, false);
+  camera.fov = BASE_FOV;
   camera.aspect = width / Math.max(1, height);
-  camera.setViewOffset(width, height, 0, VIEW_OFFSET_Y_PX, width, height);
+  applyResponsiveCameraDistance(width, height);
+  const maxDim = Math.max(width, height);
+  const viewOffsetY = maxDim <= MOBILE_MAX_DIM_PX ? MOBILE_VIEW_OFFSET_Y_PX : VIEW_OFFSET_Y_PX;
+  camera.setViewOffset(width, height, 0, viewOffsetY, width, height);
   camera.updateProjectionMatrix();
+  controls.update();
+}
+
+function applyResponsiveCameraDistance(width, height) {
+  const viewDirection = new THREE.Vector3().subVectors(camera.position, controls.target);
+  if (viewDirection.lengthSq() < 1e-8) {
+    viewDirection.set(1, 0, 0);
+  }
+  viewDirection.normalize();
+
+  let distance = BASE_CAMERA_DISTANCE;
+  const maxDim = Math.max(width, height);
+  if (maxDim <= MOBILE_MAX_DIM_PX) {
+    const aspect = width / Math.max(1, height);
+    if (aspect <= 1) {
+      const t = THREE.MathUtils.clamp((1 - aspect) / MOBILE_PORTRAIT_ASPECT_RANGE, 0, 1);
+      distance = THREE.MathUtils.lerp(MOBILE_PORTRAIT_DISTANCE_NEAR, MOBILE_PORTRAIT_DISTANCE_FAR, t);
+    } else {
+      const t = THREE.MathUtils.clamp((aspect - 1) / MOBILE_LANDSCAPE_ASPECT_RANGE, 0, 1);
+      distance = THREE.MathUtils.lerp(MOBILE_LANDSCAPE_DISTANCE_NEAR, MOBILE_LANDSCAPE_DISTANCE_FAR, t);
+    }
+    distance = THREE.MathUtils.clamp(distance, MOBILE_MIN_DISTANCE, MOBILE_MAX_DISTANCE);
+  }
+
+  camera.position.copy(controls.target).addScaledVector(viewDirection, distance);
 }
 
 function refreshStatusText() {
