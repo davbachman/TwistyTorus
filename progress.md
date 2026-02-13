@@ -57,3 +57,7 @@ Original prompt: Build a Rubik-like puzzle on a torus with 16x8 regions, click s
   - touch two-finger drag enters `orbit`
 - Saved verification screenshot: `/tmp/torus-unified-check-2.png`.
 - Updated static footer copy in `index.html` so first render text matches the new unified drag controls before JS status updates run.
+- Investigated tablet blank-canvas report; local tablet emulation rendered correctly but issue likely tied to import-map compatibility/race on some tablet browsers.
+- Added `es-module-shims` as a blocking script (non-async) before import map in `index.html` to improve compatibility on tablets with partial import-map support.
+- Bumped JS cache-buster to `main.js?v=20260211-8` to force tablet clients to fetch the updated bootstrap path.
+- Re-validated tablet smoke scenario with Playwright (`1024x1366`, touch context): state hook present, canvas rendered, no console/page errors.
