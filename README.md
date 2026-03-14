@@ -6,7 +6,7 @@ Twisty Torus is a browser puzzle game inspired by twisty puzzles, played on a to
 
 Created by David Bachman with GPT-5 Codex
 
-To learn more about David Bachman and his work visit https://pzacad.pitzer.edu/~dbachman/ and subscribe to his AI substack *Entropy Bonus* at profbachman.substack.com
+To learn more about David Bachman and his work visit https://pzacad.pitzer.edu/~dbachman/ and subscribe to his AI substack *Entropy Bonus* at https://profbachman.substack.com
 
 The torus is split into 128 regions (16 x 8). You select a region and rotate either its meridional ring or longitudinal ring.
 
