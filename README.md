@@ -4,7 +4,7 @@ Play here: [https://davbachman.github.io/TwistyTorus/](https://davbachman.github
 
 Twisty Torus is a browser puzzle game inspired by twisty puzzles, played on a torus surface.
 
-Created by David Bachman with GPT-5 Codex
+Created by David Bachman with GPT-5.4
 
 To learn more about David Bachman and his work visit https://pzacad.pitzer.edu/~dbachman/ and subscribe to his AI substack *Entropy Bonus* at https://profbachman.substack.com
 
